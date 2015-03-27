@@ -46,11 +46,19 @@ function! s:getpos()
   let span = max([0, get(g:, 'limelight_paragraph_span', 0) - empty(getline('.'))])
   let pos = getpos('.')
   for _ in range(0, span)
-    let start = searchpos('^$', 'bW')[0]
+    if &filetype == 'cpp'
+      let start = searchpair('{', '', '}', 'bW')
+    else
+      let start = searchpos('^$', 'bW')[0]
+    endif
   endfor
   call setpos('.', pos)
   for _ in range(0, span)
-    let end = searchpos('^$', 'W')[0]
+    if &filetype == 'cpp'
+      let end = searchpair('{', '', '}', 'W')
+    else
+      let end = searchpos('^$', 'W')[0]
+    endif
   endfor
   call setpos('.', pos)
   return [start, end]
